@@ -1,3 +1,10 @@
+/*
+  날짜 : 2025-12-17
+  내용 : WAVE CARD 메인 화면
+
+  참고 : 생성 후 손댄거 없음.
+*/
+
 import 'package:flutter/material.dart';
 
 void main() {
