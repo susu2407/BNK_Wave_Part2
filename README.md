@@ -1,4 +1,4 @@
-# bnkpart2
+# BNK CARD part2P
 부산은행 국비 과정의 본 프로젝트 2차(Flutter)
 
 ---
@@ -131,6 +131,7 @@ lib/
 
 
 ## (참고 / 2차 폴더 구조는 변동성 있음, 1차는 변동 없음.)
+```text
 lib/
 ├─ config/
 │  ├─ api_config.dart     // API 기본 URL, 키 등
@@ -184,3 +185,4 @@ lib/
 │     └─ chatbot_screen.dart
 │
 └─ main.dart# BNK_Wave_Part2
+```
