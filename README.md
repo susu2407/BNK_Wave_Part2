@@ -1,4 +1,4 @@
-# BNK CARD part2P
+# BNK CARD Part2
 부산은행 국비 과정의 본 프로젝트 2차(Flutter)
 
 ---
