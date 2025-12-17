@@ -1,0 +1,33 @@
+# ----------------------------------------------------------------------
+# 1. IDE 및 로컬 설정 파일 (IDE and Local Configuration Files)
+# ----------------------------------------------------------------------
+.idea/
+.vscode/
+.DS_Store
+
+# ----------------------------------------------------------------------
+# 2. 빌드 결과물, 캐시, 생성된 파일 (Build Artifacts, Cache, and Generated Files)
+# ----------------------------------------------------------------------
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+.packages
+/build/
+/coverage/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+/android/app/debug
+/android/app/profile
+/android/app/release
+
+# 심볼릭 및 난독화 관련 (Symbolication and Obfuscation related (Keep if needed for crash analysis))
+app.*.symbols
+app.*.map.json
+
+# ----------------------------------------------------------------------
+# 3. 개인 및 환경 변수 - 보안상 중요 (Private and Environment Variables (Critical for Security))
+# ----------------------------------------------------------------------
+.env
+ate_working_dir/
