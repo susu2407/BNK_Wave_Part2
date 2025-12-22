@@ -1,7 +1,7 @@
 /*
   날짜 : 2025-12-18
   내용 : card_benefit 모델
-  이름 : 박효빈
+  이름 : 박효빈.
 */
 
 class CardBenefit {

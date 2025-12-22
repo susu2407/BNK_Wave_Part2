@@ -1,7 +1,7 @@
 /*
   날짜 : 2025-12-18
   내용 : card_basic 모델
-  이름 : 박효빈
+  이름 : 박효빈.
 */
 class CardBasic {
   final int cardId; //카드 상품의 고유 식별자
