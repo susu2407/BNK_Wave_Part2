@@ -125,7 +125,7 @@ class _PaymentAccountChangeScreenState extends State<PaymentAccountChangeScreen>
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '[$] | [$displayId]',
+                    '[] | [$displayId]',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
