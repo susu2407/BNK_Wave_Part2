@@ -1,3 +1,10 @@
+/*
+  날짜 : 2025-12-29
+  이름 : 박요셉
+  내용 : 혜택 상세 화면
+
+  - 이번달 받은 혜택 화면(benefit_monthly_screen)에서 상세로 이동하는 화면
+ */
 import 'package:flutter/material.dart';
 
 class BenefitDetailScreen extends StatefulWidget {
