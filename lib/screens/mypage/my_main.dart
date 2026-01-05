@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bnkpart2/providers/auth_provider.dart';
 
+// 서비스와 모델 임포트 (파일 경로가 다르면 수정해주세요)
+import 'package:bnkpart2/services/mypage/card_service.dart';
+import 'package:bnkpart2/models/dto/my_card.dart';
+
 /// 마이페이지 탭
 class MyMain extends StatefulWidget {
   const MyMain({super.key});
@@ -12,6 +16,12 @@ class MyMain extends StatefulWidget {
 }
 
 class _MyMainState extends State<MyMain> {
+  // 금액에 콤마를 찍어주는 함수
+  String formatCurrency(int amount) {
+    return amount.toString().replaceAllMapped(
+        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
+  }
+
   /// 로그인 전 화면
   Widget _buildLogin() {
     return Center(
@@ -39,7 +49,6 @@ class _MyMainState extends State<MyMain> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 1. 테두리가 포함된 상단 사용자 영역
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
@@ -49,22 +58,18 @@ class _MyMainState extends State<MyMain> {
               child: _buildUserHeader(),
             ),
             const SizedBox(height: 16),
-
-            // 2. 테두리가 포함된 배너 슬라이드 광고
             _buildBannerSection(),
             const SizedBox(height: 20),
-
-            // 3. 내 카드 섹션
             _buildMyCardHeader(),
             const SizedBox(height: 12),
-            _buildCardInfoSection(),
-            const SizedBox(height: 20),
 
-            // 4. 받은 혜택 섹션
+            // --- 수정된 부분: 카드 정보 섹션 호출 ---
+            _buildCardInfoSection(),
+            // --------------------------------------
+
+            const SizedBox(height: 20),
             _buildBenefitSection(),
             const SizedBox(height: 24),
-
-            // 5. 마이 화면 편집 버튼
             _buildEditButton(),
             const SizedBox(height: 40),
           ],
@@ -73,22 +78,20 @@ class _MyMainState extends State<MyMain> {
     );
   }
 
-  /// 상단 사용자 정보 헤더 (이미지 디자인 반영)
+  /// 상단 사용자 정보 헤더
   Widget _buildUserHeader() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
-          '효피바라', // 이미지의 텍스트로 수정
+          '효피바라',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         Row(
           children: [
             _buildHeaderButton('메인페이지', () => Navigator.pop(context)),
             const SizedBox(width: 12),
-            _buildHeaderButton('알림', () {
-              // TODO: 알림 화면 이동
-            }),
+            _buildHeaderButton('알림', () {}),
             const SizedBox(width: 12),
             _buildHeaderButton('로그아웃', () {
               final authProvider = Provider.of<AuthProvider>(context, listen: false);
@@ -100,7 +103,6 @@ class _MyMainState extends State<MyMain> {
     );
   }
 
-  /// 헤더 버튼 공통 위젯
   Widget _buildHeaderButton(String text, VoidCallback onTap) {
     return GestureDetector(
       onTap: onTap,
@@ -108,7 +110,7 @@ class _MyMainState extends State<MyMain> {
     );
   }
 
-  /// 배너 광고 섹션 (이미지 디자인 반영)
+  /// 배너 광고 섹션
   Widget _buildBannerSection() {
     return Container(
       width: double.infinity,
@@ -135,7 +137,6 @@ class _MyMainState extends State<MyMain> {
     );
   }
 
-  /// 배너 내부 아이템 (불렛 포인트)
   Widget _buildBannerItem(String text) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 2),
@@ -159,58 +160,101 @@ class _MyMainState extends State<MyMain> {
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
         ),
         GestureDetector(
-          onTap: () {
-            // TODO: 카드 관리 화면 이동
-          },
+          onTap: () {},
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey),
               borderRadius: BorderRadius.circular(4),
             ),
-            child: const Text(
-              '내 카드 관리',
-              style: TextStyle(fontSize: 12),
-            ),
+            child: const Text('내 카드 관리', style: TextStyle(fontSize: 12)),
           ),
         ),
       ],
     );
   }
 
-  /// 카드 정보 섹션
+  // 서버 연동 카드 정보 섹션 ---
   Widget _buildCardInfoSection() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
-                Text('카드명 | 카드번호 뒷자리', style: TextStyle(fontSize: 13)),
-                SizedBox(height: 16),
-                Text('N월 이용금액', style: TextStyle(color: Colors.blueGrey, fontSize: 12)),
-                SizedBox(height: 4),
-                Text('000,000원', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-              ],
+    return FutureBuilder<MyCardModel>(
+      future: CardService().getMyPageData(2), // 2번 멤버 조회
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: CircularProgressIndicator(),
             ),
+          );
+        } else if (snapshot.hasError) {
+          return _buildErrorContainer('데이터 로드 실패');
+        } else if (!snapshot.hasData) {
+          return _buildErrorContainer('카드 정보가 없습니다.');
+        }
+
+        final card = snapshot.data!;
+
+        return Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8),
           ),
-          Container(
-            width: 80,
-            height: 120,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(border: Border.all(color: Colors.grey)),
-            child: const Text('카드 이미지', style: TextStyle(fontSize: 11), textAlign: TextAlign.center),
+          child: Row(
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${card.cardName} | ${card.cardNumber}',
+                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                    const SizedBox(height: 16),
+                    const Text('이번 달 이용금액',
+                        style: TextStyle(color: Colors.blueGrey, fontSize: 12)),
+                    const SizedBox(height: 4),
+                    Text('${formatCurrency(card.totalUsageAmount)}원',
+                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  ],
+                ),
+              ),
+              Container(
+                width: 60,
+                height: 100,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(color: Colors.grey.shade200),
+                  image: DecorationImage(
+                    image: NetworkImage(card.cardImageUrl),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: card.cardImageUrl.isEmpty
+                    ? const Icon(Icons.credit_card, color: Colors.grey)
+                    : null,
+              ),
+            ],
           ),
-        ],
+        );
+      },
+    );
+  }
+
+  /// 에러 발생 시 보여줄 컨테이너
+  Widget _buildErrorContainer(String message) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.red.shade200),
+        borderRadius: BorderRadius.circular(8),
+        color: Colors.red.shade50,
+      ),
+      child: Center(
+        child: Text(message, style: const TextStyle(color: Colors.red)),
       ),
     );
   }
+  // ----------------------------------------------
 
   /// 받은 혜택 섹션
   Widget _buildBenefitSection() {
@@ -233,7 +277,6 @@ class _MyMainState extends State<MyMain> {
     );
   }
 
-  /// 혜택 프로그레스 바
   Widget _buildBenefitBar(String title, double value, String amount) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
@@ -262,7 +305,6 @@ class _MyMainState extends State<MyMain> {
     );
   }
 
-  /// 화면 편집 버튼
   Widget _buildEditButton() {
     return Center(
       child: SizedBox(
