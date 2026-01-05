@@ -1,15 +1,17 @@
 /*
   날짜 : 2026-01-02
   이름 : 이수연
-  내용 : 카드 목록을 보여 주는 위젯
- */
+  내용 : 카드 목록 및 카드 정보를 보여 주는 위젯
 
+  재활용을 위해 위젯을 리팩토링 함.
+
+  [리팩토링] Map 데이터 덩어리 대신, 위젯이 표현할 데이터를 각각의 파라미터로 받습니다.
+  이렇게 하면 위젯이 특정 데이터 구조(Map)에 종속되지 않고, 훨씬 유연하고 재사용성이 높아집니다.
+ */
 
 import 'package:flutter/material.dart';
 
 class CardListItemWidget extends StatelessWidget {
-  // [리팩토링] Map 데이터 덩어리 대신, 위젯이 표현할 데이터를 각각의 파라미터로 받습니다.
-  // 이렇게 하면 위젯이 특정 데이터 구조(Map)에 종속되지 않고, 훨씬 유연하고 재사용성이 높아집니다.
   final String cardName;
   final String cardType;
   final String cardNumber;

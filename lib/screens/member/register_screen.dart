@@ -1,9 +1,18 @@
+/*
+  날짜 : 2025-12-29
+  이름 : 고정현
+  내용 : 회원가입 화면
+
+  수정 : main 화면 연결하면서 발생한 오류 수정.
+        - 회원가입 완료 시, 로그인 화면으로 이동.
+ */
+
 import 'dart:developer';
 import 'package:flutter/material.dart';
-import 'package:bnkpart2/main.dart';
 
 import '../../models/entity/member.dart';
-import '../../services/member_service.dart';
+import '../../services/member/member_service.dart';
+import 'login_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -120,7 +129,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       Navigator.pushAndRemoveUntil(
         context,
-        MaterialPageRoute(builder: (_) => const MyHomePage(title: 'BNK WAVE')),
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
             (_) => false,
       );
     } catch (e) {

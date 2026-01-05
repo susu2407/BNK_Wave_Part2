@@ -1,30 +1,24 @@
 import 'dart:convert';
 
-import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-import '../models/entity/member.dart';
+import '../../models/entity/member.dart';
 
 class MemberService {
 
   final String baseUrl = "http://10.0.2.2:8080/ch09";
 
+  // [수정] 실제 서버 통신 대신, 목업(mock-up) 데이터를 반환하도록 변경
   Future<Map<String, dynamic>> login(String usid, String pass) async {
+    // 1초간 일부러 지연시켜 실제 네트워크 통신처럼 보이게 함
+    await Future.delayed(const Duration(seconds: 1));
 
-    final response = await http.post(
-      Uri.parse('http://localhost:8080/api/auth/login'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({
-        'loginId': usid,
-        'password': pass,
-      }),
-    );
+    print('Mock login successful for: $usid');
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('로그인 실패');
-    }
+    // 로그인 성공 시, 가짜 액세스 토큰을 포함한 Map을 반환
+    return {
+      'accessToken': 'fake-token-for-$usid',
+    };
   }
 
   Future<Map<String, dynamic>> register(Member member) async {

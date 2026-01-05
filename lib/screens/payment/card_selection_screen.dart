@@ -16,12 +16,13 @@ import 'package:bnkpart2/screens/payment/card_account_input_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:bnkpart2/screens/payment/card_list_item_widget.dart';
 
-void main() {
-  runApp(const MaterialApp(
-    home: PaymentAccountChangeScreen(),
-    debugShowCheckedModeBanner: false,  // 디버그 모드 띠 숨기기 위한 설정
-  ));
-}
+//void main() {
+//  runApp(const MaterialApp(
+//    home: PaymentAccountChangeScreen(),
+//    debugShowCheckedModeBanner: false,  // 디버그 모드 띠 숨기기 위한 설정
+//  ));
+//}
+
 
 // 설계도 역할
 class PaymentAccountChangeScreen extends StatefulWidget {
@@ -123,7 +124,10 @@ class _PaymentAccountChangeScreenState extends State<PaymentAccountChangeScreen>
       backgroundColor: Colors.white,
       elevation: 0,
       centerTitle: true,
-      leading: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 20),
+      leading: IconButton(
+        icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black, size: 20),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
       title: const Text(
           '결제계좌',
           style: TextStyle(
