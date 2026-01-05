@@ -7,6 +7,7 @@
   이름 : 박효빈
 */
 
+import 'package:bnkpart2/screens/member/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bnkpart2/providers/auth_provider.dart';
@@ -65,29 +66,36 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             // 로그인 상태 표시
+            // 로그인 상태 표시
             Text(
               authProvider.isLoggedIn ? '로그인 상태' : '로그아웃 상태',
               style: Theme.of(context).textTheme.headlineSmall,
             ),
             const SizedBox(height: 40),
 
-            // 로그인/로그아웃 버튼
+// 로그인 화면 이동 / 로그아웃 버튼
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (authProvider.isLoggedIn) {
                   authProvider.logout();
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('로그아웃 되었습니다')),
                   );
                 } else {
-                  // 테스트용 더미 토큰으로 로그인
-                  authProvider.login('test_token_12345');
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('로그인 되었습니다')),
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const LoginScreen()),
                   );
+
+                  // (선택) 돌아왔을 때 상태에 따라 메시지 표시
+                  if (authProvider.isLoggedIn) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('로그인 되었습니다')),
+                    );
+                  }
                 }
               },
-              child: Text(authProvider.isLoggedIn ? '로그아웃' : '로그인'),
+              child: Text(authProvider.isLoggedIn ? '로그아웃' : '로그인 화면으로'),
             ),
             const SizedBox(height: 20),
 
