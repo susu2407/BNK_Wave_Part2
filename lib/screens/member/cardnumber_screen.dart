@@ -1,7 +1,7 @@
 /*
   날짜 : 2025-12-29
-  이름 : 이수연
-  내용 : 내 카드 화면, 재사용을 위해 파일 분리
+  이름 : 고정현
+  내용 : 카드 번호 정보 화면
  */
 
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class CardViewPage extends StatelessWidget {
             Navigator.pop(context);
           },
         ),
-        title: const Text('내 카드'),
+        title: const Text('내 카드 정보'),
         centerTitle: true,
         elevation: 0,
       ),
@@ -35,19 +35,16 @@ class CardViewPage extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: Colors.grey, width: 2),
-                color: Colors.grey.shade100,
-              ),
-              alignment: Alignment.center,
-              child: const Text(
-                '카드\n이미지',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 18, color: Colors.grey),
+                image: const DecorationImage(
+                  image: AssetImage('assets/images/AMEX_Platinum.png'),
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
 
             const SizedBox(height: 20),
 
-            /// 카드명 버튼
+            /// 카드명
             SizedBox(
               width: double.infinity,
               height: 45,
@@ -60,7 +57,7 @@ class CardViewPage extends StatelessWidget {
                   ),
                 ),
                 child: const Text(
-                  '카드명',
+                  '신한 Deep Dream',
                   style: TextStyle(fontSize: 16, color: Colors.black),
                 ),
               ),
@@ -69,7 +66,7 @@ class CardViewPage extends StatelessWidget {
             const SizedBox(height: 6),
 
             const Text(
-              '카드타입(신용, 체크)',
+              '카드타입ㅣ신용',
               style: TextStyle(color: Colors.black),
             ),
 
@@ -85,39 +82,14 @@ class CardViewPage extends StatelessWidget {
                 children: [
                   _infoRow(
                     title: '카드 번호',
-                    value: '5274-****-****-3389',
+                    value: '1234-5678-9012-3456',
                   ),
                   const Divider(),
                   _infoRow(
                     title: '유효 기간',
-                    value: 'YY/DD/MM',
+                    value: '30/12',
                   ),
                 ],
-              ),
-            ),
-
-            const SizedBox(height: 14),
-
-            //버튼
-            SizedBox(
-              width: double.infinity,
-              height: 42,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  // TODO: 카드번호 전체 보기 로직
-                },
-                icon: const Icon(Icons.visibility, size: 18),
-                label: const Text(
-                  '카드 번호 보기',
-                  style: TextStyle(fontSize: 14),
-                ),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.black,
-                  side: BorderSide(color: Colors.grey.shade400),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
               ),
             ),
           ],
