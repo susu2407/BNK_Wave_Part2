@@ -9,11 +9,13 @@
  */
 
 import 'package:bnkpart2/screens/mypage/my_card_management_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bnkpart2/providers/auth_provider.dart';
 
+import '../../models/dto/account_dto.dart';
+import '../benefit/benefit_monthly_screen.dart';
+import '../payment/card_account_input_screen.dart';
 import '../payment/card_selection_screen.dart';
 
 // 서비스와 모델 임포트 (파일 경로가 다르면 수정해주세요)
@@ -59,6 +61,7 @@ class _MyMainState extends State<MyMain> {
         ],
       ),
     );
+  }
   // 금액에 콤마를 찍어주는 함수
   String formatCurrency(int amount) {
     return amount.toString().replaceAllMapped(
@@ -212,8 +215,13 @@ class _MyMainState extends State<MyMain> {
 
   /// 카드 정보 섹션 (디자인 수정)
   Widget _buildCardInfoSection() {
+    // TODO: authProvider에서 실제 사용자 ID를 가져오도록 수정해야 합니다.
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    //int memberId = authProvider.memberId;
+    int memberId = 2; // 임시로 2번 사용
+
     return FutureBuilder<MyCardModel>(
-      future: CardService().getMyPageData(2), // 2번 멤버 조회
+      future: CardService().getMyPageData(memberId), // memberId 변수 사용
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -329,9 +337,17 @@ class _MyMainState extends State<MyMain> {
           const SizedBox(height: 20),
           TextButton(
             onPressed: () {
+              // 카드 정보가 없는 경우, 임시 데이터로 화면 이동
+              final dummyCard = AccountInputDto(
+                cardId: 0, // 실제 ID가 없으므로 0으로 설정
+                cardName: '카카오뱅크 개인사업자 삼성카드',
+                cardNumber: '3692',
+                cardType: '개인',
+                cardImageUrl: '',
+              );
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const PaymentAccountChangeScreen()),
+                MaterialPageRoute(builder: (context) => CardAccountInputScreen(selectedCard: dummyCard)),
               );
             },
             style: TextButton.styleFrom(
@@ -366,50 +382,147 @@ class _MyMainState extends State<MyMain> {
 
   /// 받은 혜택 섹션
   Widget _buildBenefitSection() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('받은 혜택', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 16),
-          _buildBenefitBar('교통', 0.6, '21,550원'),
-          _buildBenefitBar('외식', 0.7, '345,780원'),
-          _buildBenefitBar('여가', 0.2, '52,187원'),
-        ],
-      ),
+    return GestureDetector(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const BenefitMonthScreen()),
+          );
+        },
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.grey),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('받은 혜택', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 16),
+              const Text(
+                '카드명 | 카드번호 뒷자리',
+                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                '결제년월일시~년월일시',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+              const SizedBox(height: 24),
+              _buildBenefitBar('교통', 0.6, '21,550원'),
+              _buildBenefitBar('외식', 0.7, '345,780원'),
+              _buildBenefitBar('여가', 0.2, '52,187원'),
+            ],
+          ),
+        )
     );
   }
 
   Widget _buildBenefitBar(String title, double value, String amount) {
+    const barHeight = 10.0;
+    const markerSize = 14.0;
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.only(bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: const TextStyle(fontSize: 18)),
-              Text(amount, style: const TextStyle(fontSize: 18)),
+              Text(title, style: const TextStyle(fontSize: 16, color: Colors.black87, fontWeight: FontWeight.w500)),
+              Text(amount, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ],
           ),
+          const SizedBox(height: 12),
+          LayoutBuilder(builder: (context, constraints) {
+            return Stack(
+              clipBehavior: Clip.none,
+              children: [
+                // Track
+                Container(
+                  height: barHeight,
+                  decoration: BoxDecoration(
+                    color: Colors.grey.shade200,
+                    borderRadius: BorderRadius.circular(barHeight / 2),
+                  ),
+                ),
+                // Progress
+                Container(
+                  width: constraints.maxWidth * value,
+                  height: barHeight,
+                  decoration: BoxDecoration(
+                    color: Colors.lightBlue.shade300,
+                    borderRadius: BorderRadius.circular(barHeight / 2),
+                  ),
+                ),
+                // Dashed line inside progress
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: SizedBox(
+                      width: constraints.maxWidth * value,
+                      child: Row(
+                        children: List.generate(
+                          30,
+                              (i) => Expanded(
+                            child: Container(
+                              height: 1,
+                              margin: const EdgeInsets.symmetric(horizontal: 2),
+                              color: Colors.white.withOpacity(0.6),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                // Markers
+                Positioned(
+                  left: constraints.maxWidth * 0.33 - (markerSize / 2),
+                  top: (barHeight - markerSize) / 2,
+                  child: Container(
+                    width: markerSize,
+                    height: markerSize,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.6),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.black, width: 1),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  left: constraints.maxWidth * 0.66 - (markerSize / 2),
+                  top: (barHeight - markerSize) / 2,
+                  child: Container(
+                    width: markerSize,
+                    height: markerSize,
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.6),
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.black, width: 1),
+                    ),
+                  ),
+                ),
+              ],
+            );
+          }),
           const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: value,
-              minHeight: 12,
-              backgroundColor: Colors.grey.shade300,
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-            ),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text('0원', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                Text('50만원', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                Text('100만원', style: TextStyle(fontSize: 11, color: Colors.grey)),
+                Text('150만원', style: TextStyle(fontSize: 11, color: Colors.grey)),
+              ],
+            )
           ),
-        ],
-      ),
+        ]
+      )
     );
   }
 
