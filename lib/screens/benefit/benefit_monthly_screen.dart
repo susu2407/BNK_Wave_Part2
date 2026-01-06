@@ -1,9 +1,12 @@
+/*
+  날짜 : 2025-12-24
+  이름 : 박요셉
+  내용 : 이번달 받은 혜택 화면
+
+  - 혜택 상세 화면(benefit_summary_screen)으로 화면 이동 필요
+ */
 import 'package:flutter/material.dart';
 import 'benefit_summary_screen.dart';
-
-void main() {
-  runApp(const MyApp());
-}
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -124,10 +127,10 @@ class _BenefitMonthScreenState extends State<BenefitMonthScreen> {
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Expanded(
+                        const Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            children: const [
+                            children: [
                               Text(
                                 '내 카드 모든 혜택',
                                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900),

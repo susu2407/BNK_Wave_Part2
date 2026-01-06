@@ -1,16 +1,25 @@
-import 'package:flutter/cupertino.dart';
+/*
+  날짜 : 2025-12-29
+  이름 : 박효빈
+  내용 : 마이페이지 화면
+
+  날짜 : 2026-01-05
+  이름 : 이수연
+  내용 : 화면 디자인 수정 & 화면 연결
+ */
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:bnkpart2/providers/auth_provider.dart';
 
-// 서비스와 모델 임포트
+import 'package:bnkpart2/providers/auth_provider.dart';
+import 'package:bnkpart2/screens/mypage/my_card_management_screen.dart';
+import 'package:bnkpart2/screens/benefit/benefit_monthly_screen.dart';
+import 'package:bnkpart2/screens/payment/card_selection_screen.dart';
+
 import 'package:bnkpart2/services/mypage/card_service.dart';
 import 'package:bnkpart2/models/dto/my_card.dart';
 
-// 이동할 페이지 임포트 (파일 경로가 다르면 수정해주세요)
-import 'package:bnkpart2/screens/benefit/benefit_monthly_screen.dart';
-
-/// 마이페이지 탭
+/// 마이페이지 메인
 class MyMain extends StatefulWidget {
   const MyMain({super.key});
 
@@ -19,10 +28,41 @@ class MyMain extends StatefulWidget {
 }
 
 class _MyMainState extends State<MyMain> {
-  // 금액에 콤마를 찍어주는 함수
+  int _currentIndex = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context);
+    final bool isLoggedIn = authProvider.isLoggedIn;
+
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: isLoggedIn ? _buildLoggedIn() : _buildLogin(),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        onTap: (i) => setState(() => _currentIndex = i),
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey.shade600,
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: '마이'),
+          BottomNavigationBarItem(icon: Icon(Icons.card_giftcard), label: '혜택'),
+          BottomNavigationBarItem(icon: Icon(Icons.map_outlined), label: '지도'),
+          BottomNavigationBarItem(icon: Icon(Icons.chat_bubble_outline), label: '챗봇'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: '회원정보'),
+        ],
+      ),
+    );
+  }
+
+  /// 금액 포맷
   String formatCurrency(int amount) {
     return amount.toString().replaceAllMapped(
-        RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},');
+      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (m) => '${m[1]},',
+    );
   }
 
   /// 로그인 전 화면
@@ -35,7 +75,7 @@ class _MyMainState extends State<MyMain> {
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
-              // TODO: 로그인 화면으로 이동
+              // TODO: 로그인 화면 이동
             },
             child: const Text('로그인 이동'),
           ),
@@ -47,107 +87,73 @@ class _MyMainState extends State<MyMain> {
   /// 로그인 후 메인 화면
   Widget _buildLoggedIn() {
     return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade600, width: 1.5),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: _buildUserHeader(),
-            ),
-            const SizedBox(height: 16),
-            _buildBannerSection(),
-            const SizedBox(height: 20),
-            _buildMyCardHeader(),
-            const SizedBox(height: 12),
-            _buildCardInfoSection(),
-            const SizedBox(height: 20),
-
-            // --- 받은 혜택 섹션 ---
-            _buildBenefitSection(),
-
-            const SizedBox(height: 24),
-            _buildEditButton(),
-            const SizedBox(height: 40),
-          ],
-        ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildUserHeader(),
+          const SizedBox(height: 16),
+          _buildBannerSection(),
+          const SizedBox(height: 20),
+          _buildMyCardHeader(),
+          const SizedBox(height: 12),
+          _buildCardInfoSection(),
+          const SizedBox(height: 20),
+          _buildBenefitSection(),
+          const SizedBox(height: 24),
+          _buildEditButton(),
+          const SizedBox(height: 40),
+        ],
       ),
     );
   }
 
-  /// 상단 사용자 정보 헤더
+  /// 상단 사용자 헤더
   Widget _buildUserHeader() {
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
-          '고정현',
+          '박효빈',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
-        Row(
-          children: [
-            _buildHeaderButton('메인페이지', () => Navigator.pop(context)),
-            const SizedBox(width: 12),
-            _buildHeaderButton('알림', () {}),
-            const SizedBox(width: 12),
-            _buildHeaderButton('로그아웃', () {
-              final authProvider = Provider.of<AuthProvider>(context, listen: false);
-              authProvider.logout();
-            }),
-          ],
-        )
+        Expanded(
+          child: Center(
+            child: GestureDetector(
+              onTap: () {},
+              child: const Text('메인페이지'),
+            ),
+          ),
+        ),
+        IconButton(
+          onPressed: () {
+            Provider.of<AuthProvider>(context, listen: false).logout();
+          },
+          icon: Icon(Icons.logout, color: Colors.grey.shade600),
+        ),
       ],
     );
   }
 
-  Widget _buildHeaderButton(String text, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Text(text, style: const TextStyle(fontSize: 12)),
-    );
-  }
-
-  /// 배너 광고 섹션
+  /// 배너 섹션
   Widget _buildBannerSection() {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 20),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade600, width: 1.5),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const Text(
-            '< 배너 슬라이드 광고 >',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => Scaffold(
+              appBar: AppBar(title: const Text('임시 지도 화면')),
+              body: const Center(child: Text('지도 화면')),
+            ),
           ),
-          const SizedBox(height: 16),
-          _buildBannerItem('MAP 이벤트 안내'),
-          _buildBannerItem('MAP으로 이동'),
-          const SizedBox(height: 20),
-          _buildBannerItem('챗봇 홍보 이미지'),
-          _buildBannerItem('챗봇으로 이동'),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildBannerItem(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Text('• ', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          Text(text, style: const TextStyle(fontSize: 16)),
-        ],
+        );
+      },
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.asset(
+          'assets/images/mapbanner.png',
+          fit: BoxFit.cover,
+        ),
       ),
     );
   }
@@ -158,40 +164,36 @@ class _MyMainState extends State<MyMain> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
-          '내 카드 >',
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+          '내 카드',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        GestureDetector(
-          onTap: () {},
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: const Text('내 카드 관리', style: TextStyle(fontSize: 12)),
-          ),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const MyCardManagementScreen()),
+            );
+          },
+          child: const Text('내 카드관리'),
         ),
       ],
     );
   }
 
-  /// 서버 연동 카드 정보 섹션
+  /// 카드 정보
   Widget _buildCardInfoSection() {
     return FutureBuilder<MyCardModel>(
       future: CardService().getMyPageData(2),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: CircularProgressIndicator(),
-            ),
+          return const Padding(
+            padding: EdgeInsets.all(20),
+            child: Center(child: CircularProgressIndicator()),
           );
-        } else if (snapshot.hasError) {
-          return _buildErrorContainer('데이터 로드 실패');
-        } else if (!snapshot.hasData) {
-          return _buildErrorContainer('카드 정보가 없습니다.');
+        }
+
+        if (!snapshot.hasData) {
+          return _buildErrorContainer();
         }
 
         final card = snapshot.data!;
@@ -208,31 +210,21 @@ class _MyMainState extends State<MyMain> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('${card.cardName} | ${card.cardNumber}',
-                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                    Text('${card.cardName} | ${card.cardNumber}'),
                     const SizedBox(height: 16),
-                    const Text('이번 달 이용금액',
-                        style: TextStyle(color: Colors.blueGrey, fontSize: 12)),
-                    const SizedBox(height: 4),
-                    Text('${formatCurrency(card.totalUsageAmount)}원',
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                    const Text('이번 달 이용금액'),
+                    Text(
+                      '${formatCurrency(card.totalUsageAmount)}원',
+                      style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
                   ],
                 ),
               ),
-              Container(
+              Image.network(
+                card.cardImageUrl,
                 width: 60,
                 height: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: Colors.grey.shade200),
-                  image: DecorationImage(
-                    image: NetworkImage(card.cardImageUrl),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: card.cardImageUrl.isEmpty
-                    ? const Icon(Icons.credit_card, color: Colors.grey)
-                    : null,
+                fit: BoxFit.cover,
               ),
             ],
           ),
@@ -241,52 +233,41 @@ class _MyMainState extends State<MyMain> {
     );
   }
 
-  Widget _buildErrorContainer(String message) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.red.shade200),
-        borderRadius: BorderRadius.circular(8),
-        color: Colors.red.shade50,
-      ),
-      child: Center(
-        child: Text(message, style: const TextStyle(color: Colors.red)),
-      ),
+  Widget _buildErrorContainer() {
+    return OutlinedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const PaymentAccountChangeScreen()),
+        );
+      },
+      child: const Text('연결 계좌 설정'),
     );
   }
 
-  /// 받은 혜택 섹션 (전체 클릭 시 이동 추가)
+  /// 받은 혜택
   Widget _buildBenefitSection() {
     return GestureDetector(
       onTap: () {
-        // 섹션 전체 클릭 시 상세 페이지로 이동
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const BenefitMonthScreen()),
+          MaterialPageRoute(builder: (_) => const BenefitMonthScreen()),
         );
       },
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
           border: Border.all(color: Colors.grey),
           borderRadius: BorderRadius.circular(8),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: const [
-                Text('받은 혜택 >', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                Icon(Icons.chevron_right, color: Colors.grey),
-              ],
-            ),
+            const Text('받은 혜택 >', style: TextStyle(fontSize: 16)),
             const SizedBox(height: 16),
-            _buildBenefitBar('교통', 0.6, '700,000원'),
-            _buildBenefitBar('외식', 0.4, '500,000원'),
-            _buildBenefitBar('여가', 0.2, '200,000원'),
+            _buildBenefitBar('교통', 0.6, '21,550원'),
+            _buildBenefitBar('외식', 0.7, '345,780원'),
+            _buildBenefitBar('여가', 0.2, '52,187원'),
           ],
         ),
       ),
@@ -297,25 +278,16 @@ class _MyMainState extends State<MyMain> {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: const TextStyle(fontSize: 13)),
-              Text(amount, style: const TextStyle(fontSize: 13)),
+              Text(title),
+              Text(amount),
             ],
           ),
           const SizedBox(height: 8),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: LinearProgressIndicator(
-              value: value,
-              minHeight: 12,
-              backgroundColor: Colors.grey.shade300,
-              valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
-            ),
-          ),
+          LinearProgressIndicator(value: value),
         ],
       ),
     );
@@ -323,30 +295,10 @@ class _MyMainState extends State<MyMain> {
 
   Widget _buildEditButton() {
     return Center(
-      child: SizedBox(
-        width: 200,
-        child: OutlinedButton(
-          onPressed: () {},
-          child: const Text('마이 화면 편집'),
-        ),
+      child: OutlinedButton(
+        onPressed: () {},
+        child: const Text('마이 화면 편집'),
       ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final authProvider = Provider.of<AuthProvider>(context);
-    bool isLoggedin = authProvider.isLoggedIn;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('마이 페이지'),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-      ),
-      backgroundColor: Colors.white,
-      body: isLoggedin ? _buildLoggedIn() : _buildLogin(),
     );
   }
 }
