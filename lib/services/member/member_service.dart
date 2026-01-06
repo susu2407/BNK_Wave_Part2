@@ -1,3 +1,13 @@
+/*
+  날짜 : 2025-12-29
+  이름 : 고정현
+  내용 : 회원 서비스
+
+  날짜 : 2026-01-05
+  이름 : 이수연
+  내용 : 목업으로 로그인 가능하도록 변경
+ */
+
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;

@@ -1,3 +1,12 @@
+/*
+  날짜 : 2025-12-29
+  이름 : 고정현
+  내용 : 아이디 찾기 화면
+
+  날짜 : 2025-12-30
+  이름 : 이수연
+  내용 : 오류 주석 처리 해놓음
+ */
 import 'package:flutter/material.dart';
 
 class FindIdScreen extends StatefulWidget {

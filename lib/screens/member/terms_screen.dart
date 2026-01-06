@@ -1,3 +1,8 @@
+/*
+  날짜 : 2025-12-29
+  이름 : 고정현
+  내용 : 로그인 화면
+ */
 
 import 'package:flutter/material.dart';
 import 'package:bnkpart2/screens/member/register_screen.dart';

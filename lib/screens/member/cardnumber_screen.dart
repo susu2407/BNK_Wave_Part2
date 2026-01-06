@@ -1,3 +1,9 @@
+/*
+  날짜 : 2025-12-29
+  이름 : 이수연
+  내용 : 내 카드 화면, 재사용을 위해 파일 분리
+ */
+
 import 'package:flutter/material.dart';
 
 class CardViewPage extends StatelessWidget {

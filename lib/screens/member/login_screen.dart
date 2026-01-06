@@ -1,3 +1,13 @@
+/*
+  날짜 : 2025-12-29
+  이름 : 고정현
+  내용 : 로그인 화면
+
+  날짜 : 2026-01-05
+  이름 : 이수연
+  내용 : 화면 디자인 수정 & 화면 연결
+ */
+
 import 'dart:developer';
 
 import 'package:bnkpart2/models/dto/account_dto.dart';
