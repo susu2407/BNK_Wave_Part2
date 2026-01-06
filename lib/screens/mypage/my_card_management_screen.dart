@@ -1,3 +1,9 @@
+/*
+  날짜 : 2026-01-05
+  이름 : 이수연
+  내용 : 내 카드 관리 화면을 구현
+ */
+
 import 'package:flutter/material.dart';
 
 class MyCardManagementScreen extends StatelessWidget {

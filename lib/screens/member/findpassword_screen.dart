@@ -1,3 +1,9 @@
+/*
+  날짜 : 2025-12-29
+  이름 : 고정현
+  내용 : 비밀번호 찾기 화면
+ */
+
 import 'package:flutter/material.dart';
 
 class FindPasswordScreen extends StatelessWidget {
