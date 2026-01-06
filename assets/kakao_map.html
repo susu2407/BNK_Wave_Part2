@@ -39,26 +39,61 @@
         kakao.maps.load(function() {
             var container = document.getElementById('map');
             var options = {
-                center: new kakao.maps.LatLng(37.566826, 126.978656), // 지도의 중심좌표
-                level: 3 // 지도의 확대 레벨
+                center: new kakao.maps.LatLng(37.3092, 127.1059), // 지도 중심좌표
+                level: 8 // 지도의 확대 레벨
             };
 
             var map = new kakao.maps.Map(container, options); // 지도 생성
 
-            // ⭐ 1. 마커가 표시될 위치 정의 (서울 시청)
-            var markerPosition = new kakao.maps.LatLng(37.566826, 126.978656);
+           // 1. 마커 위치 정의
+            var markerPositions = [
+              new kakao.maps.LatLng(37.4981, 127.0276), // 스타벅스 강남점
+              new kakao.maps.LatLng(37.5012, 127.0353), // 투썸플레이스
+              new kakao.maps.LatLng(37.5665, 126.9780), // 네이버페이
+              new kakao.maps.LatLng(37.5665, 126.9780), // 카카오페이
+              new kakao.maps.LatLng(37.5551, 126.9707), // 지하철
+              new kakao.maps.LatLng(37.5551, 126.9707), // 버스
+              new kakao.maps.LatLng(37.5100, 127.0200), // CU
+              new kakao.maps.LatLng(37.5665, 126.9780), // 쿠팡
+              new kakao.maps.LatLng(37.3771, 127.1112), // SK주유소
+              new kakao.maps.LatLng(37.4980, 127.0270), // 올리브영
+              new kakao.maps.LatLng(37.4975, 127.0285), // 다이소
+              new kakao.maps.LatLng(37.4983, 127.0290), // 메가커피
+              new kakao.maps.LatLng(37.5665, 126.9780), // 네이버페이
+              new kakao.maps.LatLng(37.5551, 126.9707), // 지하철
+              new kakao.maps.LatLng(37.5145, 127.1059), // GS25
+              new kakao.maps.LatLng(37.3225, 127.0960), // 현대오일뱅크
+              new kakao.maps.LatLng(37.5665, 126.9780), // 쿠팡
+              new kakao.maps.LatLng(37.4981, 127.0276), // 스타벅스
+            ];
 
-            var content = '<div class="custom-overlay-style">1</div>';
+            // 2. 마커 생성
+            var customOverlays = [];
 
-            // ⭐ 2. 마커 생성
-            var customMarker = new kakao.maps.CustomOverlay({
-                position: markerPosition, // 마커 위치
-                content: content,        // 표시할 HTML 엘리먼트
-                yAnchor: 1               // 좌표에 엘리먼트의 아래쪽이 위치하도록 설정
+            markerPositions.forEach(function(markerPosition, index) {
+                var content =
+                    '<div class="custom-overlay-style">' + (index + 1) + '</div>';
+
+                var customMarker = new kakao.maps.CustomOverlay({
+                    position: markerPosition,
+                    content: content,
+                    yAnchor: 0.5 // 오버레이 중심 기준
+                });
+
+                customMarker.setMap(map);
+                customOverlays.push(customMarker);
             });
 
-            // 지도에 커스텀 오버레이 표시
-            customMarker.setMap(map);
+            // 3. 마커 순서대로 선 연결
+            var polyline = new kakao.maps.Polyline({
+                path: markerPositions,
+                strokeWeight: 3,
+                strokeColor: '#FF0000',
+                strokeOpacity: 0.8,
+                strokeStyle: 'solid'
+            });
+
+            polyline.setMap(map);
         });
     };
 </script>

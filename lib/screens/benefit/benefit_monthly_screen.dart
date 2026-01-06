@@ -1,10 +1,3 @@
-/*
-  날짜 : 2025-12-24
-  이름 : 박요셉
-  내용 : 이번달 받은 혜택 화면
-
-  - 혜택 상세 화면(benefit_summary_screen)으로 화면 이동 필요
- */
 import 'package:flutter/material.dart';
 import 'benefit_summary_screen.dart';
 
@@ -28,8 +21,6 @@ class BenefitMonthScreen extends StatefulWidget {
 }
 
 class _BenefitMonthScreenState extends State<BenefitMonthScreen> {
-  int _currentIndex = 1;
-
   @override
   Widget build(BuildContext context) {
     const borderColor = Color(0xFF8A8A8A);
@@ -56,14 +47,14 @@ class _BenefitMonthScreenState extends State<BenefitMonthScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // ✅ [수정] 1) 월 타이틀: 박스 제거 → 텍스트만
+              /// 월 타이틀
               const Text(
-                '2025년 12월 받은 혜택', // TODO: DB 연동 시 교체
+                '2025년 12월 받은 혜택',
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.w900),
               ),
               const SizedBox(height: 14),
 
-              // ✅ [수정] 2) 결제일 할인: 리스트형 한 줄 (원형 아이콘 + 텍스트 + 금액)
+              /// 이번달 혜택 총합 (DB 기준: 5,610원)
               Row(
                 children: [
                   Container(
@@ -78,16 +69,14 @@ class _BenefitMonthScreenState extends State<BenefitMonthScreen> {
                     ),
                   ),
                   const SizedBox(width: 12),
-
                   const Expanded(
                     child: Text(
-                      '결제일 할인', // TODO: DB 연동 시 교체
+                      '결제일 할인',
                       style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
                     ),
                   ),
-
                   const Text(
-                    '925 원', // TODO: DB 연동 시 교체
+                    '5,610원',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.w800),
                   ),
                 ],
@@ -97,7 +86,7 @@ class _BenefitMonthScreenState extends State<BenefitMonthScreen> {
               const Divider(height: 1, thickness: 1, color: Color(0xFFE8E8E8)),
               const SizedBox(height: 14),
 
-              // ✅ [수정] 3) 안내: 테두리 박스 제거 + 회색 bullet
+              /// 안내 문구
               const _BulletText(
                 '결제일할인/적립 내역입니다.',
                 color: Color(0xFF8E8E8E),
@@ -106,20 +95,17 @@ class _BenefitMonthScreenState extends State<BenefitMonthScreen> {
               ),
               const SizedBox(height: 10),
               const _BulletText(
-                '일부 혜택 금액은 적용 방식 및 시점 차이로 포함되지않습니다.',
+                '일부 혜택 금액은 적용 방식 및 시점 차이로 포함되지 않을 수 있습니다.',
                 color: Color(0xFF8E8E8E),
                 fontSize: 13,
                 fontWeight: FontWeight.w600,
               ),
 
               const SizedBox(height: 22),
-
-
-              const SizedBox(height: 14),
               const Divider(height: 1, thickness: 1, color: Color(0xFFE8E8E8)),
               const SizedBox(height: 14),
 
-              // ===== 아래는 기존 유지 =====
+              /// 카드 혜택 목록
               Container(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
                 child: Column(
@@ -137,7 +123,7 @@ class _BenefitMonthScreenState extends State<BenefitMonthScreen> {
                               ),
                               SizedBox(height: 6),
                               Text(
-                                '카드이름',
+                                '신한 Deep Dream',
                                 style: TextStyle(
                                   fontSize: 13,
                                   fontWeight: FontWeight.w600,
@@ -165,18 +151,20 @@ class _BenefitMonthScreenState extends State<BenefitMonthScreen> {
                       ],
                     ),
                     const SizedBox(height: 22),
+
+                    /// 카페
                     _BenefitRow(
-                      title: '스타벅스/커피빈',
-                      subtitle: '10% 할인',
-                      amountText: '연 0원',
+                      title: '카페',
+                      subtitle: '스타벅스 · 투썸플레이스',
+                      amountText: '1,850원',
                       onTap: () {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
                             builder: (_) => const BenefitDetailScreen(
-                              benefitTitle: '국내 가맹점 1% 결제일할인1',
-                              yearAmountText: '연 0원',
-                              monthAmountText: '0원',
+                              benefitTitle: '카페 할인',
+                              yearAmountText: '연 1,850원',
+                              monthAmountText: '1,850원',
                             ),
                           ),
                         );
@@ -184,18 +172,29 @@ class _BenefitMonthScreenState extends State<BenefitMonthScreen> {
                     ),
                     const SizedBox(height: 14),
 
+                    /// 간편결제
                     _BenefitRow(
                       title: '온라인 간편결제',
-                      subtitle: '5% 할인',
-                      amountText: '0원',
+                      subtitle: '네이버페이 · 카카오페이',
+                      amountText: '1,350원',
                       onTap: () {},
                     ),
                     const SizedBox(height: 14),
 
+                    /// 교통
                     _BenefitRow(
-                      title: 'OTT 서비스 월 30% 할인',
-                      subtitle: '결제일할인',
-                      amountText: '연 0원',
+                      title: '교통',
+                      subtitle: '지하철 · 버스',
+                      amountText: '310원',
+                      onTap: () {},
+                    ),
+                    const SizedBox(height: 14),
+
+                    /// 주유
+                    _BenefitRow(
+                      title: '주유',
+                      subtitle: 'SK주유소',
+                      amountText: '2,100원',
                       onTap: () {},
                     ),
                   ],
@@ -204,12 +203,11 @@ class _BenefitMonthScreenState extends State<BenefitMonthScreen> {
             ],
           ),
         ),
-      )
+      ),
     );
   }
 }
 
-// ✅ [수정] bullet 스타일 커스텀 가능하게 변경
 class _BulletText extends StatelessWidget {
   final String text;
   final Color color;
@@ -230,12 +228,20 @@ class _BulletText extends StatelessWidget {
       children: [
         Text(
           '•  ',
-          style: TextStyle(fontSize: fontSize + 2, fontWeight: FontWeight.w900, color: color),
+          style: TextStyle(
+            fontSize: fontSize + 2,
+            fontWeight: FontWeight.w900,
+            color: color,
+          ),
         ),
         Expanded(
           child: Text(
             text,
-            style: TextStyle(fontSize: fontSize, fontWeight: fontWeight, color: color),
+            style: TextStyle(
+              fontSize: fontSize,
+              fontWeight: fontWeight,
+              color: color,
+            ),
           ),
         ),
       ],
@@ -244,9 +250,9 @@ class _BulletText extends StatelessWidget {
 }
 
 class _BenefitRow extends StatelessWidget {
-  final String title;      // 1줄(굵게)
-  final String? subtitle;  // 2줄(회색, 선택)
-  final String amountText; // 오른쪽 금액
+  final String title;
+  final String? subtitle;
+  final String amountText;
   final VoidCallback onTap;
 
   const _BenefitRow({
@@ -276,7 +282,6 @@ class _BenefitRow extends StatelessWidget {
         ),
         child: Row(
           children: [
-            // 왼쪽 텍스트 1~2줄
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -299,8 +304,6 @@ class _BenefitRow extends StatelessWidget {
                 ],
               ),
             ),
-
-            // 오른쪽 금액 + >
             Text(
               amountText,
               style: const TextStyle(fontSize: 14.5, fontWeight: FontWeight.w900),
