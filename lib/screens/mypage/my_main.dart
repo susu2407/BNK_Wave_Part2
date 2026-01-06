@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:bnkpart2/providers/auth_provider.dart';
 
-// 서비스와 모델 임포트 (파일 경로가 다르면 수정해주세요)
+// 서비스와 모델 임포트
 import 'package:bnkpart2/services/mypage/card_service.dart';
 import 'package:bnkpart2/models/dto/my_card.dart';
+
+// 이동할 페이지 임포트 (파일 경로가 다르면 수정해주세요)
+import 'package:bnkpart2/screens/benefit/benefit_monthly_screen.dart';
 
 /// 마이페이지 탭
 class MyMain extends StatefulWidget {
@@ -62,13 +65,12 @@ class _MyMainState extends State<MyMain> {
             const SizedBox(height: 20),
             _buildMyCardHeader(),
             const SizedBox(height: 12),
-
-            // --- 수정된 부분: 카드 정보 섹션 호출 ---
             _buildCardInfoSection(),
-            // --------------------------------------
-
             const SizedBox(height: 20),
+
+            // --- 받은 혜택 섹션 ---
             _buildBenefitSection(),
+
             const SizedBox(height: 24),
             _buildEditButton(),
             const SizedBox(height: 40),
@@ -84,7 +86,7 @@ class _MyMainState extends State<MyMain> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         const Text(
-          '효피바라',
+          '고정현',
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         Row(
@@ -174,10 +176,10 @@ class _MyMainState extends State<MyMain> {
     );
   }
 
-  // 서버 연동 카드 정보 섹션 ---
+  /// 서버 연동 카드 정보 섹션
   Widget _buildCardInfoSection() {
     return FutureBuilder<MyCardModel>(
-      future: CardService().getMyPageData(2), // 2번 멤버 조회
+      future: CardService().getMyPageData(2),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(
@@ -239,7 +241,6 @@ class _MyMainState extends State<MyMain> {
     );
   }
 
-  /// 에러 발생 시 보여줄 컨테이너
   Widget _buildErrorContainer(String message) {
     return Container(
       width: double.infinity,
@@ -254,25 +255,40 @@ class _MyMainState extends State<MyMain> {
       ),
     );
   }
-  // ----------------------------------------------
 
-  /// 받은 혜택 섹션
+  /// 받은 혜택 섹션 (전체 클릭 시 이동 추가)
   Widget _buildBenefitSection() {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text('받은 혜택', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 16),
-          _buildBenefitBar('교통', 0.6, '700,000원'),
-          _buildBenefitBar('외식', 0.4, '500,000원'),
-          _buildBenefitBar('여가', 0.2, '200,000원'),
-        ],
+    return GestureDetector(
+      onTap: () {
+        // 섹션 전체 클릭 시 상세 페이지로 이동
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const BenefitMonthScreen()),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: Colors.grey),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: const [
+                Text('받은 혜택 >', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                Icon(Icons.chevron_right, color: Colors.grey),
+              ],
+            ),
+            const SizedBox(height: 16),
+            _buildBenefitBar('교통', 0.6, '700,000원'),
+            _buildBenefitBar('외식', 0.4, '500,000원'),
+            _buildBenefitBar('여가', 0.2, '200,000원'),
+          ],
+        ),
       ),
     );
   }
