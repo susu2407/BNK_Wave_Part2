@@ -21,7 +21,7 @@ class MyCardModel {
   factory MyCardModel.fromJson(Map<String, dynamic> json) {
     return MyCardModel(
       cardName: json['cardName'] ?? '이름 없음',
-      cardNumber: "****${json['cardNumber']}",
+      cardNumber: json['cardNumber'],
       cardImageUrl: json['cardImageUrl'] ?? '',
       totalUsageAmount: json['totalUsageAmount'] ?? 0,
     );
