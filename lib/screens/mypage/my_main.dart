@@ -26,6 +26,8 @@ import '../payment/card_selection_screen.dart';
 import 'package:bnkpart2/services/mypage/card_service.dart';
 import 'package:bnkpart2/models/dto/my_card.dart';
 
+
+
 /// 마이페이지 탭
 class MyMain extends StatefulWidget {
   const MyMain({super.key});
@@ -38,6 +40,20 @@ class _MyMainState extends State<MyMain> {
 
   int _currentIndex = 0; // 하단 탭 바를 위한 인덱스
 
+  late final List<WidgetBuilder> _widgetList;
+
+  @override
+  void initState() {
+    super.initState();
+    _widgetList = [
+          (_) => _buildLoggedIn(),
+          (_) => MyApp(),
+          (_) => const Center(child: Text('지도')),
+          (_) => const Center(child: Text('챗봇')),
+          (_) => const Center(child: Text('회원정보 수정')),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final authProvider = Provider.of<AuthProvider>(context);
@@ -47,7 +63,9 @@ class _MyMainState extends State<MyMain> {
       backgroundColor: Colors.white,
       // [수정] AppBar를 제거하고, 본문을 SafeArea로 감싸 상태바 영역 침범을 방지합니다.
       body: SafeArea(
-        child: isLoggedin ? _buildLoggedIn() : _buildLogin(),
+        child: isLoggedin
+            ? _widgetList[_currentIndex](context)
+            : _buildLogin(),
       ),
       // [추가] 이미지에 보이는 하단 네비게이션 바를 추가합니다.
       bottomNavigationBar: BottomNavigationBar(
