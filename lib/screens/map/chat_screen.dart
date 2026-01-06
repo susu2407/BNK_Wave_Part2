@@ -5,7 +5,11 @@ class Message {
   final bool isMe;
   final DateTime time;
 
-  Message({required this.text, required this.isMe, required this.time});
+  Message({
+    required this.text,
+    required this.isMe,
+    required this.time,
+  });
 }
 
 class ChatScreen extends StatefulWidget {
@@ -17,69 +21,62 @@ class ChatScreen extends StatefulWidget {
 
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _textController = TextEditingController();
-  // 예시 채팅 제거 - 빈 리스트로 시작
   final List<Message> _messages = [];
 
-  // ============================================
-  // 자동 응답 메시지 리스트
-  // ============================================
+  // 자동 응답 리스트 (순서대로 사용)
   final List<String> _autoReplies = [
-    '그렇구나!',
-    '오 재밌네요 ㅋㅋ',
-    '진짜요?',
-    '좋아요!',
-    '알겠습니다 👍',
-    '오케이~',
-    'ㅇㅇ 맞아',
-    '그럼요!',
-    '완전 공감이에요',
-    '저도 그렇게 생각해요',
-    '헐 대박',
-    '우와 신기하다',
-    '아하 그렇군요',
-    '넵넵',
-    '고마워요 😊',
+    '주로 사용하시는 소비 항목이 무엇인가요? (예: 교통, 쇼핑, 카페)',
+    '월 평균 카드 사용 금액이 어느 정도 되시나요?',
+    '연회비는 어느 정도까지 괜찮으신가요?',
+    '말씀해주신 조건 기준으로 추천드릴게요.',
+    '해당 카드는 생활비 할인에 강점이 있어요.',
+    '전월 실적은 30만 원 이상부터 혜택이 적용됩니다.',
+    '주요 혜택은 카페·배달·대중교통 할인입니다.',
+    '이 카드 외에도 비슷한 조건의 카드가 하나 더 있어요.',
+    '추가로 궁금하신 점 있으시면 말씀해 주세요.',
   ];
+
+  int _replyIndex = 0;
 
   void _handleSubmitted(String text) {
     if (text.trim().isEmpty) return;
 
     _textController.clear();
 
-    // 내 메시지 추가
+    // 내 메시지
     setState(() {
-      _messages.add(Message(
-        text: text,
-        isMe: true,
-        time: DateTime.now(),
-      ));
+      _messages.add(
+        Message(
+          text: text,
+          isMe: true,
+          time: DateTime.now(),
+        ),
+      );
     });
 
-    // ============================================
-    // 자동 응답 부분 (1~3초 후 임의의 답변 전송)
-    // ============================================
-    Future.delayed(Duration(seconds: 1 + (DateTime.now().millisecond % 3)), () {
-      if (mounted) {
-        setState(() {
-          // 랜덤으로 응답 메시지 선택
-          final randomReply = _autoReplies[DateTime.now().millisecond % _autoReplies.length];
+    // 자동 응답 (순서대로)
+    Future.delayed(const Duration(seconds: 1), () {
+      if (!mounted) return;
 
-          _messages.add(Message(
-            text: randomReply,
-            isMe: false, // 상대방 메시지
+      setState(() {
+        _messages.add(
+          Message(
+            text: _autoReplies[_replyIndex],
+            isMe: false,
             time: DateTime.now(),
-          ));
-        });
-      }
+          ),
+        );
+
+        _replyIndex = (_replyIndex + 1) % _autoReplies.length;
+      });
     });
-    // ============================================
   }
 
   String _formatTime(DateTime time) {
-    String period = time.hour < 12 ? '오전' : '오후';
-    int hour = time.hour > 12 ? time.hour - 12 : time.hour;
+    final period = time.hour < 12 ? '오전' : '오후';
+    int hour = time.hour % 12;
     if (hour == 0) hour = 12;
-    return '$period ${hour}:${time.minute.toString().padLeft(2, '0')}';
+    return '$period $hour:${time.minute.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -103,18 +100,11 @@ class _ChatScreenState extends State<ChatScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '친구',
+                  'WAVE',
                   style: TextStyle(
                     color: Colors.black,
                     fontSize: 16,
                     fontWeight: FontWeight.bold,
-                  ),
-                ),
-                Text(
-                  '2',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontSize: 12,
                   ),
                 ),
               ],
@@ -178,11 +168,11 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           Flexible(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
-                color: message.isMe
-                    ? const Color(0xFFFAE100)
-                    : Colors.white,
+                color:
+                message.isMe ? const Color(0xFFFAE100) : Colors.white,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Text(
@@ -250,13 +240,10 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
               ),
               IconButton(
-                icon: const Icon(Icons.sentiment_satisfied_alt,
-                    color: Colors.grey),
-                onPressed: () {},
-              ),
-              IconButton(
-                icon: const Icon(Icons.send, color: Color(0xFFFAE100)),
-                onPressed: () => _handleSubmitted(_textController.text),
+                icon: const Icon(Icons.send,
+                    color: Color(0xFFFAE100)),
+                onPressed: () =>
+                    _handleSubmitted(_textController.text),
               ),
             ],
           ),

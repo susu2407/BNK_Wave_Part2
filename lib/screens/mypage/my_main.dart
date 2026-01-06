@@ -22,6 +22,8 @@ import '../benefit/benefit_monthly_screen.dart';
 import '../payment/card_account_input_screen.dart';
 import '../payment/card_selection_screen.dart';
 import '../member/cardnumber_screen.dart';
+import '../map/chat_screen.dart';
+import '../map/map_screen.dart';
 
 // 서비스와 모델 임포트 (파일 경로가 다르면 수정해주세요)
 import 'package:bnkpart2/services/mypage/card_service.dart';
@@ -50,8 +52,8 @@ class _MyMainState extends State<MyMain> {
     _widgetList = [
           (_) => _buildLoggedIn(),
           (_) => MyApp(),
-          (_) => const Center(child: Text('지도')),
-          (_) => const Center(child: Text('챗봇')),
+          (_) => KakaoMapAPIScreen(),
+          (_) => ChatScreen(),
           (_) => CardViewPage(),
     ];
   }

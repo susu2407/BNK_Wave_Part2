@@ -12,6 +12,8 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:typed_data';
 
+
+import 'dart:math';
 class KakaoMapAPIScreen extends StatefulWidget {
   @override
   State<KakaoMapAPIScreen> createState() => _KakaoMapAPIScreenState();
@@ -215,25 +217,158 @@ Widget _buildDraggableScroll(BuildContext context) {
               backgroundColor: Colors.blue,
               centerTitle: true,
               title: const Text(
-                '테스트',
+                '결제내역',
                 style: TextStyle(fontSize: 18, color: Colors.black),
               ),
             ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
-                    (context, index) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ListTile(
-                    tileColor: Colors.grey[100],
-                    title: Text('항목 ${index + 1}'),
-                  ),
-                ),
-                childCount: 50,
+                    (context, index) {
+                  final payment = dummyPayments[index];
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 6,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          /// 아이콘
+                          Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.blue[50],
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(Icons.credit_card, color: Colors.blue),
+                          ),
+
+                          const SizedBox(width: 12),
+
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      child: Text(
+                                        payment.merchant,
+                                        style: const TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                    Text(
+                                      payment.status,
+                                      style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: payment.status == '승인'
+                                            ? Colors.green
+                                            : Colors.red,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(height: 4),
+
+                                Text(
+                                  '${payment.date.year}.${payment.date.month.toString().padLeft(2, '0')}.${payment.date.day.toString().padLeft(2, '0')} '
+                                      '${payment.date.hour.toString().padLeft(2, '0')}:${payment.date.minute.toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+
+                                const SizedBox(height: 8),
+
+                                Align(
+                                  alignment: Alignment.centerRight,
+                                  child: Text(
+                                    payment.status == '승인'
+                                        ? '- ${payment.amount.toString()}원'
+                                        : '+ ${payment.amount.toString()}원',
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                childCount: dummyPayments.length,
               ),
             ),
+
+
           ],
         ),
       );
     },
   );
 }
+
+
+class PaymentHistory {
+  final String merchant;
+  final String status; // 승인 / 취소
+  final int amount;
+  final DateTime date;
+
+  PaymentHistory({
+    required this.merchant,
+    required this.status,
+    required this.amount,
+    required this.date,
+  });
+}
+
+final _random = Random();
+
+final List<String> _merchants = [
+  '스타벅스',
+  '쿠팡',
+  '배달의민족',
+  '네이버페이',
+  'GS25',
+  '이마트',
+  '애플스토어',
+];
+
+final List<PaymentHistory> dummyPayments = List.generate(20, (index) {
+  final isApproved = _random.nextBool();
+  return PaymentHistory(
+    merchant: _merchants[_random.nextInt(_merchants.length)],
+    status: isApproved ? '승인' : '취소',
+    amount: (_random.nextInt(90000) + 1000),
+    date: DateTime.now().subtract(
+      Duration(
+        days: _random.nextInt(10),
+        hours: _random.nextInt(23),
+        minutes: _random.nextInt(59),
+      ),
+    ),
+  );
+});
