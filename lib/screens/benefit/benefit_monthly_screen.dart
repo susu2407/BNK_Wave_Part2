@@ -204,21 +204,7 @@ class _BenefitMonthScreenState extends State<BenefitMonthScreen> {
             ],
           ),
         ),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (i) => setState(() => _currentIndex = i),
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.black,
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: '마이'),
-          BottomNavigationBarItem(icon: Icon(Icons.card_giftcard_outlined), label: '혜택'),
-          BottomNavigationBarItem(icon: Icon(Icons.map_outlined), label: '지도'),
-          BottomNavigationBarItem(icon: Icon(Icons.smart_toy_outlined), label: 'AI'),
-          BottomNavigationBarItem(icon: Icon(Icons.manage_accounts_outlined), label: '회원정보수정'),
-        ],
-      ),
+      )
     );
   }
 }
