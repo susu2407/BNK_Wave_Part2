@@ -122,28 +122,16 @@ class _MyMainState extends State<MyMain> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade600, width: 1.5),
-                borderRadius: BorderRadius.circular(8),
-              ),
               child: _buildUserHeader(),
             ),
             const SizedBox(height: 16),
             _buildBannerSection(),
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
             _buildMyCardHeader(),
-            const SizedBox(height: 12),
-
-            // --- 수정된 부분: 카드 정보 섹션 호출 ---
+            const SizedBox(height: 10),
             _buildCardInfoSection(),
-            // --------------------------------------
-
-            const SizedBox(height: 20),
-            _buildBenefitSection(),
-            const SizedBox(height: 24),
-            _buildEditButton(),
             const SizedBox(height: 40),
+            _buildBenefitSection(),
           ],
         ),
       ),
@@ -165,7 +153,7 @@ class _MyMainState extends State<MyMain> {
             child: Center(
               child: GestureDetector(
                 onTap: () {},
-                child: const Text('메인페이지', style: TextStyle(fontSize: 14)),
+                child: const Text('', style: TextStyle(fontSize: 14)),
               ),
             ),
           ),
@@ -261,11 +249,11 @@ class _MyMainState extends State<MyMain> {
         return Container(
           padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
           decoration: BoxDecoration(
-            color: const Color(0xFF2196F3),
+            color: const Color(0xFFCB2B11),
             borderRadius: BorderRadius.circular(20),
             boxShadow: [
               BoxShadow(
-                color: Colors.blue.withOpacity(0.3),
+                color: Colors.black.withOpacity(0.3),
                 blurRadius: 10,
                 offset: const Offset(0, 5),
               ),
@@ -343,8 +331,9 @@ class _MyMainState extends State<MyMain> {
                   );
                 },
                 style: TextButton.styleFrom(
-                  backgroundColor: const Color(0xFF47A6F8),
+                  backgroundColor: const Color(0xFFFFFFF),
                   shape: RoundedRectangleBorder(
+                    side: const BorderSide(color: Color(0xFFFFFFFF), width: 1.5),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -379,11 +368,11 @@ class _MyMainState extends State<MyMain> {
     return Container(
       padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
       decoration: BoxDecoration(
-        color: const Color(0xFF2196F3),
+        color: const Color(0xFFCB2B11),
         borderRadius: BorderRadius.circular(20),
         boxShadow: [
           BoxShadow(
-            color: Colors.blue.withOpacity(0.3),
+            color: Colors.black.withOpacity(0.3),
             blurRadius: 10,
             offset: const Offset(0, 5),
           ),
@@ -398,8 +387,8 @@ class _MyMainState extends State<MyMain> {
             children: [
               const Expanded(
                 child: Text(
-                  '카카오뱅크 개인사업자 삼성카드 | 3692',
-                  style: TextStyle(color: Colors.white, fontSize: 14),
+                  '신한 Deep Dream | 3456',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ),
               const SizedBox(width: 16),
@@ -413,12 +402,12 @@ class _MyMainState extends State<MyMain> {
           ),
           const SizedBox(height: 16),
           const Text(
-            '12월 이용금액',
+            '이번달 이용금액',
             style: TextStyle(color: Colors.white70, fontSize: 13),
           ),
           const SizedBox(height: 2),
           const Text(
-            '83,700원',
+            '477,400원',
             style: TextStyle(
               color: Colors.white,
               fontSize: 28,
@@ -431,10 +420,10 @@ class _MyMainState extends State<MyMain> {
               // 카드 정보가 없는 경우, 임시 데이터로 화면 이동
               final dummyCard = AccountInputDto(
                 cardId: 0, // 실제 ID가 없으므로 0으로 설정
-                cardName: '카카오뱅크 개인사업자 삼성카드',
-                cardNumber: '3692',
-                cardType: '개인',
-                cardImageUrl: '',
+                cardName: '신한 Deep Dream',
+                cardNumber: '1234-5678-9012-3456',
+                cardType: '신용',
+                cardImageUrl: '2',
               );
               Navigator.push(
                 context,
@@ -442,8 +431,9 @@ class _MyMainState extends State<MyMain> {
               );
             },
             style: TextButton.styleFrom(
-              backgroundColor: const Color(0xFF47A6F8),
+              backgroundColor: const Color(0xFFFFFFF),
               shape: RoundedRectangleBorder(
+                side: const BorderSide(color: Color(0xFFFFFFFF), width: 1.5),
                 borderRadius: BorderRadius.circular(12),
               ),
               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -473,46 +463,53 @@ class _MyMainState extends State<MyMain> {
 
   /// 받은 혜택 섹션
   Widget _buildBenefitSection() {
-    return GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const BenefitMonthScreen()),
-          );
-        },
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(8),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text('받은 혜택',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        const SizedBox(height: 12),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const BenefitMonthScreen()),
+            );
+          },
+          child: Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border.all(color: Colors.grey.shade300),
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '신한 Deep Dream | 3456',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  '2025. 12. 01 ~ 2025. 12. 31',
+                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                ),
+                const SizedBox(height: 24),
+                _buildBenefitBar('교통', 0.6, '21,550원'),
+                _buildBenefitBar('외식', 0.7, '145,780원'),
+                _buildBenefitBar('여가', 0.2, '52,187원'),
+              ],
+            ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text('받은 혜택', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 16),
-              const Text(
-                '카드명 | 카드번호 뒷자리',
-                style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 4),
-              const Text(
-                '결제년월일시~년월일시',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-              const SizedBox(height: 24),
-              _buildBenefitBar('교통', 0.6, '21,550원'),
-              _buildBenefitBar('외식', 0.7, '345,780원'),
-              _buildBenefitBar('여가', 0.2, '52,187원'),
-            ],
-          ),
-        )
+        ),
+      ],
     );
   }
 
   Widget _buildBenefitBar(String title, double value, String amount) {
-    const barHeight = 10.0;
-    const markerSize = 14.0;
+    const barHeight = 20.0;
+    const markerSize = 15.0;
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 24),
@@ -544,7 +541,7 @@ class _MyMainState extends State<MyMain> {
                   width: constraints.maxWidth * value,
                   height: barHeight,
                   decoration: BoxDecoration(
-                    color: Colors.lightBlue.shade300,
+                    color: Color(0xFFCB2B11),
                     borderRadius: BorderRadius.circular(barHeight / 2),
                   ),
                 ),
@@ -599,33 +596,8 @@ class _MyMainState extends State<MyMain> {
               ],
             );
           }),
-          const SizedBox(height: 8),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 4.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text('0원', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                Text('50만원', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                Text('100만원', style: TextStyle(fontSize: 11, color: Colors.grey)),
-                Text('150만원', style: TextStyle(fontSize: 11, color: Colors.grey)),
-              ],
-            )
-          ),
         ]
       )
-    );
-  }
-
-  Widget _buildEditButton() {
-    return Center(
-      child: SizedBox(
-        width: 200,
-        child: OutlinedButton(
-          onPressed: () {},
-          child: const Text('마이 화면 편집'),
-        ),
-      ),
     );
   }
 }
