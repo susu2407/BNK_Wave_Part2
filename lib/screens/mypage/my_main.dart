@@ -6,6 +6,10 @@
   날짜 : 2026-01-05
   이름 : 이수연
   내용 : 화면 디자인 수정 & 화면 연결
+
+   날짜 : 2026-01-06
+  이름 : 박효빈
+  내용 : 화면 디테일 수정
  */
 
 import 'package:bnkpart2/screens/mypage/my_card_management_screen.dart';
@@ -215,66 +219,130 @@ class _MyMainState extends State<MyMain> {
 
   /// 카드 정보 섹션 (디자인 수정)
   Widget _buildCardInfoSection() {
-    // TODO: authProvider에서 실제 사용자 ID를 가져오도록 수정해야 합니다.
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    //int memberId = authProvider.memberId;
-    int memberId = 2; // 임시로 2번 사용
+    int memberId = 2;
 
     return FutureBuilder<MyCardModel>(
-      future: CardService().getMyPageData(memberId), // memberId 변수 사용
+      future: CardService().getMyPageData(memberId),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: CircularProgressIndicator(),
-            ),
+          return const Padding(
+            padding: EdgeInsets.all(20),
+            child: Center(child: CircularProgressIndicator()),
           );
-        } else if (snapshot.hasError) {
-          return _buildErrorContainer('데이터 로드 실패');
-        } else if (!snapshot.hasData) {
+        } else if (snapshot.hasError || !snapshot.hasData) {
           return _buildErrorContainer('카드 정보가 없습니다.');
         }
 
         final card = snapshot.data!;
 
         return Container(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey),
-            borderRadius: BorderRadius.circular(8),
+            color: const Color(0xFF2196F3),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.blue.withOpacity(0.3),
+                blurRadius: 10,
+                offset: const Offset(0, 5),
+              ),
+            ],
           ),
-          child: Row(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('${card.cardName} | ${card.cardNumber}',
-                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
-                    const SizedBox(height: 16),
-                    const Text('이번 달 이용금액',
-                        style: TextStyle(color: Colors.blueGrey, fontSize: 12)),
-                    const SizedBox(height: 4),
-                    Text('${formatCurrency(card.totalUsageAmount)}원',
-                        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                  ],
+              /// 상단 카드명 + 카드 이미지
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    child: Text(
+                      '${card.cardName} | ${card.cardNumber}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  card.cardImageUrl.isNotEmpty
+                      ? Image.network(
+                    card.cardImageUrl,
+                    width: 40,
+                    height: 64,
+                    fit: BoxFit.cover,
+                  )
+                      : const Icon(
+                    Icons.credit_card,
+                    color: Colors.white70,
+                    size: 32,
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 16),
+
+              /// 이용금액
+              const Text(
+                '이번 달 이용금액',
+                style: TextStyle(color: Colors.white70, fontSize: 13),
+              ),
+              const SizedBox(height: 2),
+              Text(
+                '${formatCurrency(card.totalUsageAmount)}원',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
-              Container(
-                width: 60,
-                height: 100,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  border: Border.all(color: Colors.grey.shade200),
-                  image: DecorationImage(
-                    image: NetworkImage(card.cardImageUrl),
-                    fit: BoxFit.cover,
+
+              const SizedBox(height: 20),
+
+              /// 연결 계좌 설정 버튼
+              TextButton(
+                onPressed: () {
+                  final dummyCard = AccountInputDto(
+                    cardId: 1,
+                    cardName: card.cardName,
+                    cardNumber: card.cardNumber,
+                    cardType: '개인',
+                    cardImageUrl: card.cardImageUrl,
+                  );
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          CardAccountInputScreen(selectedCard: dummyCard),
+                    ),
+                  );
+                },
+                style: TextButton.styleFrom(
+                  backgroundColor: const Color(0xFF47A6F8),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  minimumSize: const Size(double.infinity, 0),
                 ),
-                child: card.cardImageUrl.isEmpty
-                    ? const Icon(Icons.credit_card, color: Colors.grey)
-                    : null,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.favorite, color: Colors.white, size: 16),
+                    SizedBox(width: 8),
+                    Text(
+                      '연결 계좌 설정',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -282,6 +350,7 @@ class _MyMainState extends State<MyMain> {
       },
     );
   }
+
 
   /// 에러 발생 시 보여줄 컨테이너
   Widget _buildErrorContainer(String message) {
