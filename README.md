@@ -134,55 +134,17 @@ lib/
 ```text
 lib/
 ├─ config/
-│  ├─ api_config.dart     // API 기본 URL, 키 등
-│  ├─ route_config.dart   // 라우트 이름 정의
-│  └─ theme_config.dart   // 공통 테마 정의
-│
 ├─ models/
-│  ├─ user.dart           // 사용자 정보 모델
-│  ├─ account.dart        // 계좌 정보 모델
-│  ├─ benefit.dart        // 혜택 정보 모델
-│  └─ chat_message.dart   // 챗봇 메시지 모델
-│
 ├─ providers/
-│  ├─ auth/               // 인증 관련 상태
-│  │  └─ auth_provider.dart
-│  ├─ benefit/            // 혜택 관련 상태
-│  │  └─ benefit_provider.dart
-│  └─ chatbot/            // 챗봇 관련 상태
-│     └─ chatbot_provider.dart
-│
 ├─ services/
-│  ├─ auth/               // 로그인, 회원가입 등 인증 로직
-│  │  └─ auth_service.dart
-│  ├─ payment/            // 결제, 계좌 관리 등 로직
-│  │  └─ payment_service.dart
-│  ├─ benefit/            // 혜택 데이터 처리 로직
-│  │  └─ benefit_service.dart
-│  └─ chatbot/            // 챗봇과의 통신 및 처리 로직
-│     └─ chatbot_service.dart
-│
 ├─ screens/
-│  ├─ auth/               // 인증 관련 화면
-│  │  ├─ login_screen.dart
-│  │  └─ find_pw_screen.dart
-│  │
-│  ├─ mypage/             // 마이페이지 관련 화면
-│  │  └─ mypage_screen.dart
-│  │
-│  ├─ payment/            // 결제 계좌 관리 화면
-│  │  ├─ account_register_screen.dart
-│  │  └─ account_edit_screen.dart
-│  │
-│  ├─ benefit/            // 혜택 상세 화면
-│  │  ├─ benefit_summary_screen.dart
-│  │  └─ benefit_monthly_screen.dart
-│  │
-│  ├─ map/                // 지도 관련 화면
-│  │  └─ payment_map_screen.dart
-│  │
-│  └─ chatbot/            // 챗봇 화면
-│     └─ chatbot_screen.dart
+│  ├─ auth/
+│  ├─ mypage/
+│  ├─ member/
+│  ├─ payment/
+│  ├─ benefit/
+│  └─ map/
 │
-└─ main.dart# BNK_Wave_Part2
+└─ main.dart
+# BNK_Wave_Part2
 ```
