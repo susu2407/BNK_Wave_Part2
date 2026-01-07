@@ -224,7 +224,7 @@ Widget _buildDraggableScroll(BuildContext context) {
             SliverList(
               delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                  final payment = dummyPayments[index];
+                  final payment = displayPayments[index];
 
                   return Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -242,9 +242,8 @@ Widget _buildDraggableScroll(BuildContext context) {
                         ],
                       ),
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          /// 아이콘
+                          // 아이콘 섹션
                           Container(
                             width: 40,
                             height: 40,
@@ -254,60 +253,38 @@ Widget _buildDraggableScroll(BuildContext context) {
                             ),
                             child: const Icon(Icons.credit_card, color: Colors.blue),
                           ),
-
                           const SizedBox(width: 12),
 
+                          // 가맹점 및 정보 섹션
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
-                                    Expanded(
-                                      child: Text(
-                                        payment.merchant,
-                                        style: const TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
                                     Text(
-                                      payment.status,
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.w500,
-                                        color: payment.status == '승인'
-                                            ? Colors.green
-                                            : Colors.red,
-                                      ),
+                                      payment.merchant,
+                                      style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w600),
+                                    ),
+                                    const Text(
+                                      '승인',
+                                      style: TextStyle(fontSize: 12, color: Colors.green, fontWeight: FontWeight.w500),
                                     ),
                                   ],
                                 ),
-
                                 const SizedBox(height: 4),
-
                                 Text(
-                                  '${payment.date.year}.${payment.date.month.toString().padLeft(2, '0')}.${payment.date.day.toString().padLeft(2, '0')} '
-                                      '${payment.date.hour.toString().padLeft(2, '0')}:${payment.date.minute.toString().padLeft(2, '0')}',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    color: Colors.grey[600],
-                                  ),
+                                  '${payment.date.year}.${payment.date.month.toString().padLeft(2, '0')}.${payment.date.day.toString().padLeft(2, '0')}',
+                                  style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                                 ),
-
                                 const SizedBox(height: 8),
-
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: Text(
-                                    payment.status == '승인'
-                                        ? '- ${payment.amount.toString()}원'
-                                        : '+ ${payment.amount.toString()}원',
-                                    style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    // 1,000 단위 콤마 포맷 적용
+                                    '- ${payment.amount.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}원',
+                                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ],
@@ -318,11 +295,9 @@ Widget _buildDraggableScroll(BuildContext context) {
                     ),
                   );
                 },
-                childCount: dummyPayments.length,
+                childCount: displayPayments.length,
               ),
-            ),
-
-
+            )
           ],
         ),
       );
@@ -336,39 +311,54 @@ class PaymentHistory {
   final String status; // 승인 / 취소
   final int amount;
   final DateTime date;
+  final double lat; // 위도 추가
+  final double lng; // 경도 추가
 
   PaymentHistory({
     required this.merchant,
     required this.status,
     required this.amount,
     required this.date,
+    required this.lat,
+    required this.lng,
   });
 }
 
 final _random = Random();
-
-final List<String> _merchants = [
-  '스타벅스',
-  '쿠팡',
-  '배달의민족',
-  '네이버페이',
-  'GS25',
-  '이마트',
-  '애플스토어',
+// 이미지 데이터 기반 가맹점 및 금액 매핑
+final List<Map<String, dynamic>> _fixedPaymentData = [
+  {'name': '스타벅스 강남점', 'lat': 37.4981, 'lng': 127.0276, 'amount': 12000},
+  {'name': '투썸플레이스', 'lat': 37.5012, 'lng': 127.0353, 'amount': 6500},
+  {'name': '네이버페이', 'lat': 37.5665, 'lng': 126.9780, 'amount': 38000},
+  {'name': '카카오페이', 'lat': 37.5665, 'lng': 126.9780, 'amount': 52000},
+  {'name': '지하철', 'lat': 37.5551, 'lng': 126.9707, 'amount': 1550},
+  {'name': '버스', 'lat': 37.5551, 'lng': 126.9707, 'amount': 1550},
+  {'name': 'CU', 'lat': 37.5100, 'lng': 127.0200, 'amount': 9800},
+  {'name': '쿠팡', 'lat': 37.5665, 'lng': 126.9780, 'amount': 89000},
+  {'name': 'SK주유소', 'lat': 37.3771, 'lng': 127.1112, 'amount': 70000},
+  {'name': '올리브영', 'lat': 37.4980, 'lng': 127.0270, 'amount': 45000},
+  {'name': '다이소', 'lat': 37.4975, 'lng': 127.0285, 'amount': 32000},
+  {'name': '메가커피', 'lat': 37.4983, 'lng': 127.0290, 'amount': 5500},
+  {'name': '네이버페이', 'lat': 37.5665, 'lng': 126.9780, 'amount': 25000},
+  {'name': '지하철', 'lat': 37.5551, 'lng': 126.9707, 'amount': 1550},
+  {'name': 'GS25', 'lat': 37.5145, 'lng': 127.1059, 'amount': 15000},
+  {'name': '현대오일뱅크', 'lat': 37.3225, 'lng': 127.0960, 'amount': 60000},
+  {'name': '쿠팡', 'lat': 37.5665, 'lng': 126.9780, 'amount': 42000},
+  {'name': '스타벅스', 'lat': 37.4981, 'lng': 127.0276, 'amount': 9000},
 ];
 
-final List<PaymentHistory> dummyPayments = List.generate(20, (index) {
-  final isApproved = _random.nextBool();
+// 1. 오늘 날짜로 데이터 생성
+final List<PaymentHistory> dummyPayments = List.generate(_fixedPaymentData.length, (index) {
+  final item = _fixedPaymentData[index];
   return PaymentHistory(
-    merchant: _merchants[_random.nextInt(_merchants.length)],
-    status: isApproved ? '승인' : '취소',
-    amount: (_random.nextInt(90000) + 1000),
-    date: DateTime.now().subtract(
-      Duration(
-        days: _random.nextInt(10),
-        hours: _random.nextInt(23),
-        minutes: _random.nextInt(59),
-      ),
-    ),
+    merchant: item['name'],
+    lat: item['lat'],
+    lng: item['lng'],
+    status: '승인',
+    amount: item['amount'],
+    date: DateTime.now(), // 모두 오늘 날짜 고정
   );
 });
+
+// 2. 리스트를 역순으로 정렬 (이미지의 가장 아래인 '스타벅스(9,000)'가 리스트 0번이 됨)
+final List<PaymentHistory> displayPayments = dummyPayments.reversed.toList();

@@ -462,18 +462,24 @@ class _MyMainState extends State<MyMain> {
   // ----------------------------------------------
 
   /// 받은 혜택 섹션
+  /// 받은 혜택 섹션 (DB 기반 하드코딩)
   Widget _buildBenefitSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('받은 혜택',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+        const Text(
+          '받은 혜택',
+          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+        ),
         const SizedBox(height: 12),
+
         GestureDetector(
           onTap: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const BenefitMonthScreen()),
+              MaterialPageRoute(
+                builder: (context) => const BenefitMonthScreen(),
+              ),
             );
           },
           child: Container(
@@ -486,19 +492,48 @@ class _MyMainState extends State<MyMain> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                /// 카드 정보
                 const Text(
                   '신한 Deep Dream | 3456',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 4),
+
+                /// 기간
                 const Text(
                   '2025. 12. 01 ~ 2025. 12. 31',
-                  style: TextStyle(fontSize: 12, color: Colors.grey),
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey,
+                  ),
                 ),
+
                 const SizedBox(height: 24),
-                _buildBenefitBar('교통', 0.6, '21,550원'),
-                _buildBenefitBar('외식', 0.7, '145,780원'),
-                _buildBenefitBar('여가', 0.2, '52,187원'),
+
+                /// 카테고리별 받은 혜택 (DB 기준)
+                _buildBenefitBar(
+                  '교통',
+                  0.25,          // 전체 대비 비율 (UI용)
+                  '310P',        // 포인트 기준
+                ),
+                _buildBenefitBar(
+                  '카페',
+                  0.65,
+                  '2,750P',
+                ),
+                _buildBenefitBar(
+                  '간편결제',
+                  0.35,
+                  '1,350P',
+                ),
+                _buildBenefitBar(
+                  '주유',
+                  0.45,
+                  '2,100P',
+                ),
               ],
             ),
           ),
@@ -506,6 +541,7 @@ class _MyMainState extends State<MyMain> {
       ],
     );
   }
+
 
   Widget _buildBenefitBar(String title, double value, String amount) {
     const barHeight = 20.0;
