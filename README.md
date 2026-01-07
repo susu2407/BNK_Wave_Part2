@@ -124,27 +124,3 @@ lib/
 
 * 본 저장소는 **학습 및 포트폴리오 공개 목적**으로 관리됩니다.
 * 일부 기능은 시연 또는 구조 구현에 초점을 맞추었습니다.
-
----
----
-
-
-
-## (참고 / 2차 폴더 구조는 변동성 있음, 1차는 변동 없음.)
-```text
-lib/
-├─ config/
-├─ models/
-├─ providers/
-├─ services/
-├─ screens/
-│  ├─ auth/
-│  ├─ mypage/
-│  ├─ member/
-│  ├─ payment/
-│  ├─ benefit/
-│  └─ map/
-│
-└─ main.dart
-# BNK_Wave_Part2
-```
